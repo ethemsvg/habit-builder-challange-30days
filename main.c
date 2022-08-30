@@ -5,7 +5,7 @@
 void remove_habit(int entry);
 void show_detailed_report();
 void show_detailed_report();
-void register_report(int num_of_habits);
+void register_report();
 void list_habits();
 void add_habit();
 
@@ -18,10 +18,8 @@ int main()
     int i=0;
     int bufferLength=64;
     char buffer[bufferLength];
-    char chr2;
-    int habit_counter=0;
 
-    printf("Welcome to Habit Builder!\n");
+    printf("Welcome to Habit Builder!\n\n");
 
     FILE *fp;
 
@@ -53,30 +51,18 @@ int main()
 
 
 
-    FILE *fp2;
-
-    fp2 = fopen("habit_names.txt","r");
-
-
-    while (chr2 != EOF){
-        //Count whenever new line is encountered
-        if (chr2 == '\n'){
-            habit_counter += 1;
-        }
-        //take next character from file.
-        chr2 = getc(fp2);
-    }
-
-    fclose(fp2);
 
     printf("1.Add new habit.\n2.Register daily report.\n3.See current progress details.\n4.See current habits.\n5.Remove Habit\n6.Exit\n");
 
     while(selectionMain != 6){
 
+
+
+
         printf("\nSelect an option to continue: ");
         scanf("%d",&selectionMain);
 
-        while(selectionMain > habit_counter){
+        while(selectionMain > 6 || selectionMain < 1){
         while ( getchar() != '\n' );
         printf("Invalid entry. Please try again.\n");
         scanf("%d",&selectionMain);
@@ -91,7 +77,7 @@ int main()
             case 2:
                 list_habits();
                 printf("You can enter 0 to exit to main menu.");
-                register_report(habit_counter);
+                register_report();
                 // get progress data function.
                 break;
             case 3:
@@ -116,6 +102,9 @@ int main()
                 printf("Invalid entry. Please try again.");
                 break;
         }
+
+                //fclose(fp2);
+
 
 
     }
@@ -261,7 +250,25 @@ This function gets the progress input from the user.
 
 Asks whether he failed the habit today or not.
 */
-void register_report(int num_of_habits){
+void register_report(){
+
+    FILE *fp2;
+        char chr2;
+        fp2 = fopen("habit_names.txt","r");
+
+        int num_of_habits = 0;
+
+        while (chr2 != EOF){
+            //Count whenever new line is encountered
+            if (chr2 == '\n'){
+                num_of_habits += 1;
+            }
+            //take next character from file.
+            chr2 = getc(fp2);
+        }
+
+    fclose(fp2);
+
 
     FILE *fp;
 
@@ -272,14 +279,12 @@ void register_report(int num_of_habits){
     }
 
     int habit_id;
-
     printf("\nPlease enter habit id to register daily report: "); // Gets the id of the habit.
     scanf("%d",&habit_id);
     while ( getchar() != '\n' );
-
+    printf("habit id: %d   numofhabits: %d",habit_id,num_of_habits);
     if(habit_id != 0){
-
-    while(habit_id > num_of_habits){
+    while(habit_id > num_of_habits || habit_id < 1){
         while ( getchar() != '\n' );
         printf("Entry out of range. Please try again.\n");
         scanf("%d",&habit_id);
@@ -414,6 +419,8 @@ void add_habit(){
     fprintf(fpDescriptions,"%d  ",days_succeed);
     fprintf(fpDescriptions,"%d  ",days_failed);
     fprintf(fpDescriptions,"\n");
+
+
 
     fclose(fpData);
 
